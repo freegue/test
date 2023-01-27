@@ -31,10 +31,6 @@ object formDynamicSelectValueEditor: TformDynamicSelectValueEditor
     TabStop = False
     object TabSheet: TTabSheet
       Caption = #49440#53469' '#45824#49345
-      ExplicitLeft = 0
-      ExplicitTop = 29
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
   end
   object Panel1: TPanel

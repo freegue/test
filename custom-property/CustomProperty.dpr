@@ -15,7 +15,8 @@ uses
   uConditionObject in 'uConditionObject.pas',
   fmPropertyInspector in 'fmPropertyInspector.pas' {formPropertyInspector},
   fmPatternInfoSelect in 'fmPatternInfoSelect.pas' {fmPatternSelect},
-  fmIPPortValueEditor in 'fmIPPortValueEditor.pas' {formIPPortValueEditor};
+  fmIPPortValueEditor in 'fmIPPortValueEditor.pas' {formIPPortValueEditor},
+  fmDynamicSelectValueEditor in 'fmDynamicSelectValueEditor.pas' {formDynamicSelectValueEditor};
 
 {$R *.res}
 

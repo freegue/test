@@ -77,6 +77,8 @@ begin
   FBlolckMethod.ValueList.AddObject('SN_SRC_IP', TObject(1));
   FBlolckMethod.ValueList.AddObject('SN_DST_IP', TObject(2));
   FBlolckMethod.ValueList.AddObject('SN_AND_IP', TObject(8));
+  FBlolckMethod.ValueList.AddObject('SN_SRC_PORT', TObject(0));
+  FBlolckMethod.ValueList.AddObject('SN_DST_PORT', TObject(0));
 
   //기본 값, 여러개 선택 가능여부
   FBlolckMethod.SelectValue := '';

@@ -32,6 +32,8 @@ type
     FValueList: TStringList;
     function GetSelectValue: String;
     procedure SetSelectValue(const Value: String);
+    procedure LBDrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
+    procedure LBClick(Sender: TObject);
   public
     constructor CreateForm(AOwner: TComponent; AValueList: TStringList; AMultiSelect : boolean = false);
     property MultiSelected : boolean read FMultiSelected write FMultiSelected;
@@ -55,9 +57,19 @@ begin
   FMultiSelected := AMultiSelect;
 
   if FMultiSelected then
-    ListBox := TCheckListBox.Create(TabSheet)
+  begin
+    ListBox := TCheckListBox.Create(TabSheet);
+    TCheckListBox(ListBox).OnDrawItem := LBDrawItem;
+    TCheckListBox(ListBox).OnClick := LBClick;
+    TCheckListBox(ListBox).Style := lbOwnerDrawFixed;
+  end
   else
+  begin
     ListBox := TListBox.Create(TabSheet);
+    TListBox(ListBox).OnDrawItem := LBDrawItem;
+    TListBox(ListBox).OnClick := LBClick;
+    TListBox(ListBox).Style := lbOwnerDrawFixed;
+  end;
 
   ListBox.Parent := TabSheet;
   ListBox.Align := alClient;
@@ -95,6 +107,59 @@ begin
   end;
 end;
 
+procedure TformDynamicSelectValueEditor.LBClick(Sender: TObject);
+begin
+  if not Boolean(ListBox.Items.Objects[ListBox.ItemIndex]) then
+  begin
+    Application.MessageBox('해당 값은 사용 할 수 없습니다.',
+      PChar(Application.Title), MB_OK + MB_ICONINFORMATION);
+
+    if ListBox is TCheckListBox then
+    begin
+      TCheckListBox(ListBox).Checked[ListBox.ItemIndex] := false;
+      TCheckListBox(ListBox).Selected[ListBox.ItemIndex] := false;
+    end
+    else
+    begin
+      TListBox(ListBox).Selected[ListBox.ItemIndex] := false;
+    end
+  end;
+end;
+
+procedure TformDynamicSelectValueEditor.LBDrawItem(Control: TWinControl; Index: Integer; Rect: TRect;
+  State: TOwnerDrawState);
+var
+  LRect: TRect;
+  ItemState: TOwnerDrawState;
+  AEnable: Boolean;
+begin
+  LRect := Rect;
+  AEnable := Boolean(ListBox.Items.Objects[Index]);
+  ItemState := State;
+  if not AEnable then //사용 할 수 없는 값은 상태값을 변경.
+    ItemState := ItemState + [odDisabled];
+
+  with ListBox.Canvas do
+  begin
+    FillRect( LRect );
+    Font.Color := clBlue;
+    if odSelected in ItemState then
+    begin
+      Font.Color := clWhite;
+      if odDisabled in ItemState then
+        Font.Color := clGrayText;
+      TextOut( LRect.left + 2, LRect.top, ListBox.Items[index]);
+    end
+    else
+    begin
+      if odDisabled in ItemState then
+        Font.Color := clGrayText;
+      TextOut( LRect.left + 2, LRect.top, ListBox.Items[index]);
+    end;
+  end;
+
+end;
+
 procedure TformDynamicSelectValueEditor.SetSelectValue(const Value: String);
 var
   i, idx : integer;
@@ -110,13 +175,17 @@ begin
       begin
         if FMultiSelected then
         begin
-          TCheckListBox(ListBox).Checked[idx] := True;
+          if Boolean(ListBox.Items.Objects[idx]) then
+            TCheckListBox(ListBox).Checked[idx] := True;
         end
-        else
+        else //1개 선택하는 경우는 선택가능한 1개가 선택되면 빠지기
         begin
-          ListBox.Selected[idx] := True;
-          break;
-        end;
+          if Boolean(ListBox.Items.Objects[idx]) then
+          begin
+            ListBox.Selected[idx] := True;
+            break;
+          end;
+        end;;
       end;
     end;
   finally

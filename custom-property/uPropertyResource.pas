@@ -19,7 +19,7 @@ resourcestring
   kyungmun = 'kyungmun-text';
 
 const
-  PROFILE_PROPERTYNAME_FILENAME = 'ProfilePropertyName.cfg';
+  PROFILE_PROPERTYNAME_FILENAME = 'ProfilePropertyName_.cfg';
 
 procedure LoadFromFileofPropertyResource;
 function GetPropertyNameTranslation(ProName : string) : string;
